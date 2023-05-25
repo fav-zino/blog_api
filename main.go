@@ -9,16 +9,6 @@ import (
 )
 
 
-
-// go.mongodb.org/mongo-driver/mongo
-
-
-func init(){
-
-}
-
-
-
 func main(){
 	router := gin.Default()
 	dbErr:= db.ConnectToDB()

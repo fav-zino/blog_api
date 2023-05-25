@@ -8,21 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 
 func GetPostsHandler(c *gin.Context){
-	// var posts []model.Post
-	// err:= c.BindJSON(&post); if err != nil {
-	// 	c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
-	// 	return
-	// }
-
-	// if post.Author  == "" || post.Body == "" {
-	// 	c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
-	// 	return
-	// }
 
 	var posts []model.Post
     cursor,err := db.PostCollection.Find(context.Background(), bson.M{})

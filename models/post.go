@@ -15,21 +15,3 @@ type Post struct{
     Timestamp int64        `bson:"timestamp,omitempty"`
 }
 
-
-
-// func (p *Post) Validate() error{
-// 	if p.Body == "" || p.Author == "" {
-// 		return errors.New("all required fields must be filled")
-// 	}
-
-// 	return nil
-// }
-
-
-// func (p *Post)  Save() error{
-// 	_,err := db.PostCollection.InsertOne(context.Background(),p)
-// 	if err != nil{
-// 		return err
-// 	}
-// 	return nil
-// }

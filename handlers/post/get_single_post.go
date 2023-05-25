@@ -12,9 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type singlePostInput struct {
-//     ID string `json:"_id"`
-// }
 
 
 func GetSinglePostHandler(c *gin.Context){
