@@ -16,12 +16,17 @@ import (
 func EditPostHandler(c *gin.Context){
 	var post model.Post
 	err:= c.BindJSON(&post); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
-	if post.ID == primitive.NilObjectID || post.Content == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+	if post.ID == primitive.NilObjectID  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: '_id'"})
+		return
+	}
+
+	if post.Content == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'content'"})
 		return
 	}
 
@@ -34,7 +39,7 @@ func EditPostHandler(c *gin.Context){
 	}
 
 	if res.MatchedCount  == 0 {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"post with this id not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"Post with this id not found"})
 		return
 	}
 

@@ -14,12 +14,21 @@ import (
 func CreatePostHandler(c *gin.Context){
 	var post model.Post
 	err:= c.BindJSON(&post); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
-	if post.Author  == "" || post.Content == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+	if post.Author  == ""  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'author'"})
+		return
+	}
+	if post.Title  == ""  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'title'"})
+		return
+	}
+	
+	if post.Content == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message":"Missing required field: 'content'"})
 		return
 	}
 

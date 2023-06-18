@@ -25,7 +25,7 @@ func GetPostsHandler(c *gin.Context){
 	}
 
 	if len(posts) == 0{
-		c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"no post at the moment","count":len(posts)})
+		c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"No post at the moment","count":len(posts)})
 		return 
 	}
 	

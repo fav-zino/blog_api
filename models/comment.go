@@ -5,10 +5,10 @@ import (
 )
 
 type Comment struct{
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Author    string             `bson:"author"`
-    Title     string             `bson:"title"`
-    Content   string             `bson:"content"`
-    Timestamp int64             `bson:"timestamp,omitempty"`
-	PostID    string            `bson:"postID"`
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
+	Author    string             `json:"author"`
+    Title     string             `json:"title"`
+    Content   string             `json:"content"`
+    Timestamp int64             `json:"timestamp,omitempty"`
+	PostID    string            `json:"post_id"`
 }

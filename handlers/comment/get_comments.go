@@ -13,13 +13,13 @@ import (
 func GetCommentsHandler(c *gin.Context){
 	var requestBody model.Comment
 	err:= c.BindJSON(&requestBody); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
 	
 	if requestBody.PostID == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'post_id'"})
 		return
 	}
 
@@ -36,7 +36,7 @@ func GetCommentsHandler(c *gin.Context){
 	}
 
 	if len(comments) == 0{
-		c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"no comment at the moment","count":len(comments)})
+		c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"No comment at the moment","count":len(comments)})
 		return 
 	}
 	

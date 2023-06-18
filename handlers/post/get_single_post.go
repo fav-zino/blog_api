@@ -17,13 +17,13 @@ import (
 func GetSinglePostHandler(c *gin.Context){
 	var request model.Post
 	err:= c.BindJSON(&request); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
 	
 	if request.ID == primitive.NilObjectID {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: '_id'"})
 		return
 	}
 

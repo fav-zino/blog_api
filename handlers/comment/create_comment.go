@@ -16,12 +16,20 @@ import (
 func CreateCommentHandler(c *gin.Context){
 	var comment model.Comment
 	err:= c.BindJSON(&comment); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
-	if comment.Author  == "" || comment.Content == "" || comment.PostID == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+	if comment.Author  == ""  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'author'"})
+		return
+	}
+	if comment.Content == ""  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'content'"})
+		return
+	}
+	if comment.PostID == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'post_id'"})
 		return
 	}
 
@@ -46,7 +54,7 @@ func CreateCommentHandler(c *gin.Context){
 	}
 
 	if res.MatchedCount  == 0 {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"post with this id not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"Post with this id not found"})
 		return
 	}
 

@@ -6,12 +6,12 @@ import (
 
 
 type Post struct{
-	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	Author    string             `bson:"author"`
-    Title     string             `bson:"title"`
-    Content   string             `bson:"content"`
-    ViewCount   int              `bson:"view_count"`
-    CommentCount   int            `bson:"comment_count"`
-    Timestamp int64        `bson:"timestamp,omitempty"`
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
+	Author    string             `json:"author"`
+    Title     string             `json:"title"`
+    Content   string             `json:"content"`
+    ViewCount   int              `json:"view_count"`
+    CommentCount   int            `json:"comment_count"`
+    Timestamp int64        `json:"timestamp,omitempty"`
 }
 

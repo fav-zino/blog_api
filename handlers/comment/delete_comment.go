@@ -16,13 +16,17 @@ import (
 func DeleteCommentHandler(c *gin.Context){
 	var requestBody model.Comment
 	err:= c.BindJSON(&requestBody); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "some error occured"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
 	
-	if requestBody.ID == primitive.NilObjectID || requestBody.PostID == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "all required fields must be filled"})
+	if requestBody.ID == primitive.NilObjectID  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: '_id'"})
+		return
+	}
+	if  requestBody.PostID == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'post_id'"})
 		return
 	}
 
@@ -33,7 +37,7 @@ func DeleteCommentHandler(c *gin.Context){
 	}
 
 	if res.DeletedCount == 0 {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"comment with this id not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"Comment with this id not found"})
 		return
 	}
 
@@ -49,11 +53,11 @@ func DeleteCommentHandler(c *gin.Context){
 	}
 
 	if postRes.MatchedCount  == 0 {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"post with this id not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"status":"error","message":"Post with this id not found"})
 		return
 	}
 
 	
-	c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"delete successful"})
+	c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"Delete successful"})
 
 }
