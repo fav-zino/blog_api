@@ -2,46 +2,46 @@ package comment
 
 import (
 	"blog_app_server/db"
-	"blog_app_server/models"
+	model "blog_app_server/models"
 	"context"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-
-func GetCommentsHandler(c *gin.Context){
-	var requestBody struct{
-		PostID    string            `json:"post_id" binding:"required"`
+func GetCommentsHandler(c *gin.Context) {
+	var requestBody struct {
+		PostID string `json:"post_id"`//required
 	}
-	err:= c.BindJSON(&requestBody); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
+	err := c.BindJSON(&requestBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": err})
 		return
 	}
 
-	
 	if requestBody.PostID == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'post_id'"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Missing required field: 'post_id'"})
 		return
 	}
 
 	var comments []model.Comment
-	filter := bson.M{"postID": requestBody.PostID}
-    cursor,err := db.CommentCollection.Find(context.Background(), filter)
-    if err != nil {
-        c.IndentedJSON(http.StatusInternalServerError, gin.H{"status":"error","message": err})
+	filter := bson.M{"postid": requestBody.PostID}
+	cursor, err := db.CommentCollection.Find(context.Background(), filter)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status": "error", "message": err})
 		return
-    }
+	}
 	if err = cursor.All(context.Background(), &comments); err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status":"error","message": err})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status": "error", "message": err})
 		return
 	}
 
-	if len(comments) == 0{
-		c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"No comment at the moment","count":len(comments)})
-		return 
+	if len(comments) == 0 {
+		c.IndentedJSON(http.StatusOK, gin.H{"status": "ok", "message": "No comment at the moment", "count": len(comments)})
+		return
 	}
-	
-	c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"success","comments": comments,"count":len(comments)})
+
+	c.IndentedJSON(http.StatusOK, gin.H{"status": "ok", "message": "success", "comments": comments, "count": len(comments)})
 
 }

@@ -2,7 +2,7 @@ package post
 
 import (
 	"blog_app_server/db"
-	"blog_app_server/models"
+	model "blog_app_server/models"
 	"context"
 	"net/http"
 	"time"
@@ -14,31 +14,38 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
-func EditPostHandler(c *gin.Context){
-	var  requestBody struct{
-		ID        primitive.ObjectID `bson:"_id,omitempty" json:"_id" binding:"required"`
-		Title     string             `json:"title"`
-		Content   string             `json:"content"`
+func EditPostHandler(c *gin.Context) {
+	var requestBody struct {
+		ID      primitive.ObjectID `bson:"_id,omitempty" json:"_id"`//required
+		Title   string             `json:"title"`//required
+		Content string             `json:"content"`//required
 	}
-	err:= c.BindJSON(&requestBody); if err !=nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
+	err := c.BindJSON(&requestBody)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": err})
 		return
 	}
 
-	if requestBody.ID == primitive.NilObjectID &&  requestBody.Content == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required fields: '_id','content'"})
+	if requestBody.ID == primitive.NilObjectID  {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Missing required fields: '_id'"})
 		return
 	}
-
+	if  requestBody.Content == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Missing required fields: 'content'"})
+		return
+	}
+	if  requestBody.Title == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Missing required fields: 'title'"})
+		return
+	}
 
 	timestamp := time.Now().Unix()
 	filter := bson.M{"_id": requestBody.ID}
 	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-	update := bson.M{"$set": bson.M{"content": requestBody.Content,"timestamp":timestamp}}
-	
+	update := bson.M{"$set": bson.M{"content": requestBody.Content,"title": requestBody.Title, "timestamp": timestamp,}}
+
 	var post model.Post
-	err = db.PostCollection.FindOneAndUpdate(context.Background(), filter, update,opts).Decode(&post)	
+	err = db.PostCollection.FindOneAndUpdate(context.Background(), filter, update, opts).Decode(&post)
 	if err == mongo.ErrNoDocuments {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Post with this id not found"})
 		return
@@ -46,7 +53,7 @@ func EditPostHandler(c *gin.Context){
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status": "error", "message": err})
 		return
 	}
-	
-	c.IndentedJSON(http.StatusOK, gin.H{"status":"ok","message":"Post edit successful","post":post})
+
+	c.IndentedJSON(http.StatusOK, gin.H{"status": "ok", "message": "Post edit successful", "post": post})
 
 }
