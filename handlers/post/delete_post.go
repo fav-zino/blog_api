@@ -2,7 +2,6 @@ package post
 
 import (
 	"blog_app_server/db"
-	model "blog_app_server/models"
 	"context"
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -14,14 +13,16 @@ import (
 
 
 func DeletePostHandler(c *gin.Context){
-	var request model.Post
-	err:= c.BindJSON(&request); if err !=nil {
+	var  requestBody struct{
+		ID        primitive.ObjectID `bson:"_id,omitempty" json:"_id" binding:"required"`
+	}
+	err:= c.BindJSON(&requestBody); if err !=nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
 	
-	if request.ID == primitive.NilObjectID {
+	if requestBody.ID == primitive.NilObjectID {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: '_id'"})
 		return
 	}
@@ -30,7 +31,7 @@ func DeletePostHandler(c *gin.Context){
 	// id, _ := primitive.ObjectIDFromHex( request.ID)
 	// bson.ObjectIdHex(postID)
 	
-	filter := bson.M{"_id": request.ID}
+	filter := bson.M{"_id": requestBody.ID}
 	res,err := db.PostCollection.DeleteOne(context.Background(), filter);if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status":"error","message": err})
 		return

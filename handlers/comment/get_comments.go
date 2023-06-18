@@ -11,7 +11,9 @@ import (
 
 
 func GetCommentsHandler(c *gin.Context){
-	var requestBody model.Comment
+	var requestBody struct{
+		PostID    string            `json:"post_id" binding:"required"`
+	}
 	err:= c.BindJSON(&requestBody); if err !=nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return

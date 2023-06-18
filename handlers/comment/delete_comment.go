@@ -2,7 +2,6 @@ package comment
 
 import (
 	"blog_app_server/db"
-	model "blog_app_server/models"
 	"context"
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -14,7 +13,10 @@ import (
 
 
 func DeleteCommentHandler(c *gin.Context){
-	var requestBody model.Comment
+	var requestBody struct{
+		ID    primitive.ObjectID    `json:"_id" binding:"required"`
+		PostID    string            `json:"post_id" binding:"required"`
+	}
 	err:= c.BindJSON(&requestBody); if err !=nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return

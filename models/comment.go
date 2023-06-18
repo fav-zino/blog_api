@@ -7,7 +7,6 @@ import (
 type Comment struct{
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
 	Author    string             `json:"author"`
-    Title     string             `json:"title"`
     Content   string             `json:"content"`
     Timestamp int64             `json:"timestamp,omitempty"`
 	PostID    string            `json:"post_id"`

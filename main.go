@@ -1,36 +1,25 @@
 package main
 
 import (
-	"blog_app_server/handlers/post"
-	"blog_app_server/handlers/comment"
 	"blog_app_server/db"
-	"log"
+	"blog_app_server/routes"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
-
-func main(){
+func main() {
 	router := gin.Default()
-	dbErr:= db.ConnectToDB()
-	if dbErr !=nil{
-		log.Fatal("Error connecting to database:",dbErr)
+	dbErr := db.ConnectToDB()
+	if dbErr != nil {
+		log.Fatal("Error connecting to database:", dbErr)
 	}
-		//Post
-        router.POST("/create_post",post.CreatePostHandler)
-        router.POST("/get_posts",post.GetPostsHandler)
-        router.POST("/get_single_post",post.GetSinglePostHandler)
-        router.POST("/edit_post",post.EditPostHandler)
-        router.POST("/delete_post",post.DeletePostHandler)
+	routes.LoadPostRoutes(router)
+	routes.LoadCommentRoutes(router)
 
+	gin.SetMode(gin.DebugMode)
+	err := router.Run("localhost:8080")
 
-		//Comment
-		router.POST("/create_comment",comment.CreateCommentHandler)
-        router.POST("/get_comments",comment.GetCommentsHandler)
-        router.POST("/delete_comment",comment.DeleteCommentHandler)
-
-        err := router.Run("localhost:8080")
-
-	if err != nil{
-		log.Fatal("Error starting server:",err)
+	if err != nil {
+		log.Fatal("Error starting server:", err)
 	}
 }

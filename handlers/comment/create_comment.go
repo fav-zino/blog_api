@@ -6,7 +6,6 @@ import (
 	"context"
 	"net/http"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,27 +13,35 @@ import (
 
 
 func CreateCommentHandler(c *gin.Context){
-	var comment model.Comment
-	err:= c.BindJSON(&comment); if err !=nil {
+	var requestBody struct{
+		Author    string             `json:"author" binding:"required"`
+		Content   string             `json:"content" binding:"required"`
+		PostID    string            `json:"post_id" binding:"required"`
+	}
+	err:= c.BindJSON(&requestBody); if err !=nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": err})
 		return
 	}
 
-	if comment.Author  == ""  {
+	if requestBody.Author  == ""  {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'author'"})
 		return
 	}
-	if comment.Content == ""  {
+	if requestBody.Content == ""  {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'content'"})
 		return
 	}
-	if comment.PostID == "" {
+	if requestBody.PostID == "" {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"status":"error","message": "Missing required field: 'post_id'"})
 		return
 	}
 
 	timestamp := time.Now().Unix()
+	var comment model.Comment
+	comment.Author = requestBody.Author
+	comment.Content = requestBody.Content
 	comment.Timestamp = timestamp
+	comment.PostID = requestBody.PostID
 
 	result,err := db.CommentCollection.InsertOne(context.Background(),comment);if err != nil{
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status":"error","message": err})
