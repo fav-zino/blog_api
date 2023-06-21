@@ -14,5 +14,6 @@ func LoadPostRoutes(router *gin.Engine) {
 	postRouter.POST("/get_single_post", post.GetSinglePostHandler)
 	postRouter.POST("/edit_post", post.EditPostHandler)
 	postRouter.POST("/delete_post", post.DeletePostHandler)
+	postRouter.POST("/search_post", post.SearchPostsHandler)
 
 }
